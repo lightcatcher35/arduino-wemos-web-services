@@ -19,7 +19,7 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  // Wifi'ye bağlanmazsa 10 saniye boyunca 
+  // Wifi'ye bağlanmazsa 15 saniye boyunca 
   int try_count = 0;
   while (WiFi.status() != WL_CONNECTED)
   {

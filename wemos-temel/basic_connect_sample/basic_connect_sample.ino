@@ -10,21 +10,14 @@ boolean wifi_status=false;
 
 const char* host = "http://jsonplaceholder.typicode.com/posts/1";
 
-boolean connect_wifi()
-{
-  
-}
 void setup()
 {
   // put your setup code here, to run once:
   
   Serial.begin(115200);
   Serial.println();
-
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
-  
 
   // Wifi modunu belirtip kullanıcı adı ve şifre ile giriş yapıyorum.
   WiFi.mode(WIFI_STA);
@@ -78,20 +71,6 @@ void setup()
           String payload = http.getString();
           Serial.println(payload);
 
-          StaticJsonBuffer<1000> jsonBuffer;
-          JsonObject& jsonRoot = jsonBuffer.parseObject(payload);
-
-          if (jsonRoot.success())
-          {
-            String veri = jsonRoot["userId"];
-
-            Serial.println(veri);
-            
-            Serial.println(jsonRoot["title"].asString());
-          }else
-          {
-              Serial.println(">>> Client Timeout !");
-          }
         }
       } else {
         Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
