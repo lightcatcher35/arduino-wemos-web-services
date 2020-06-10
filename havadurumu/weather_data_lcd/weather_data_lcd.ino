@@ -2,6 +2,9 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
+#include <LiquidCrystal.h>
+ 
+LiquidCrystal lcd(D9,D8,D5,D4,D3,D2);
 
 
 char* ssid ="wifi_agi";
@@ -13,6 +16,14 @@ String weather_api="http://api.openweathermap.org/data/2.5/";
 
 boolean connect_wifi(char* username,char* pass)
 {
+
+  lcd.begin(16,2);
+  lcd.clear();
+  
+  lcd.setCursor(0,0);
+  lcd.print("Aga Baglaniyor");
+  
+  delay(1000);
   Serial.println();
   Serial.print("Bağlanıyor...");
   Serial.println(username);
@@ -21,9 +32,15 @@ boolean connect_wifi(char* username,char* pass)
   WiFi.begin(username,pass);
 
   int try_count=0;
-
+  
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print(username);
+  lcd.setCursor(0,1);
   while(WiFi.status()!=WL_CONNECTED)
   {
+    
+    lcd.print(".");
     Serial.print(".");
     if(try_count>14) break;
 
@@ -35,12 +52,24 @@ boolean connect_wifi(char* username,char* pass)
   if(WiFi.status()==WL_CONNECTED)
   {
     wifi_status=true;
-
+    
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Wifi'ye baglandi");
     
     Serial.println("Wifi'ye bağlandı.");
     
     
-  }else Serial.println("Wifi'ye bağlanırken hata oluştu.");
+  }else{
+    
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Wifi'ye baglanirken");
+    lcd.setCursor(0,1);
+    lcd.print("hata olustu.");
+    
+    Serial.println("Wifi'ye bağlanırken hata oluştu.");
+  }
 
   
     return wifi_status;
@@ -95,9 +124,21 @@ void setup() {
 
   Serial.begin(115200);
 
+  connect_wifi(ssid,password);
   
   
-  if(connect_wifi(ssid,password))
+
+
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+
+
+
+  if(wifi_status)
   {
 
       String payload=http_get_request(weather_api+"weather?q=izmir&appid=dea52beea184f7f0c99c3fea5787dd88&units=metric&lang=tr");
@@ -113,20 +154,24 @@ void setup() {
       {
         String weather_desc=JsonRoot["weather"][0]["description"];
         float weather_C=JsonRoot["main"]["temp"];
+
+        
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print(weather_desc);
+        lcd.setCursor(0,1);
+        lcd.print("hava "+String((int)weather_C)+" derece");
         
         Serial.println("hava durumu : "+weather_desc);
         
         Serial.println("hava "+String((int)weather_C)+" derece");
+
+        
       }
 
     
+    delay(10000);  
   }
   
-
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
 
 }

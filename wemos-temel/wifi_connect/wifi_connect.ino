@@ -19,13 +19,13 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  // Wifi'ye bağlanmazsa 15 saniye boyunca 
+  // Wifi'ye bağlanmazsa 8 saniye boyunca 
   int try_count = 0;
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(".");
     
-    if (try_count > 15)
+    if (try_count > 16)
       break;
 
     try_count++;
@@ -37,7 +37,6 @@ void setup() {
   {
     wifi_status = true;
     Serial.println("İnternete bağlandı.");
-    Serial.println("Wifi Status : "+String(wifi_status));
     
   } else  Serial.println("İnternete bağlanamadı."); 
 
